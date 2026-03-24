@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Advanced Chatbot</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="main">
+
+<div class="sidebar">
+<h3>💬 History</h3>
+<div id="historyList"></div>
+<button onclick="clearHistory()">Clear</button>
+</div>
+
+<div class="container">
+
+<div class="header">🤖 Smart AI Chatbot</div>
+
+<div class="options">
+Reply:
+<select id="replyMode">
+<option value="text">Text</option>
+<option value="voice">Voice</option>
+<option value="both">Both</option>
+</select>
+</div>
+
+<div id="chat"></div>
+
+<div class="input-area">
+<input type="text" id="userInput" placeholder="Type message...">
+<button onclick="sendMessage()">➤</button>
+<button onclick="startVoice()">🎤</button>
+</div>
+
+</div>
+</div>
+
+<script>
+
+window.onload = () => {
+let h = JSON.parse(localStorage.getItem("chat")) || [];
+h.forEach(m=>{
+addMessage(m.text,m.sender,false);
+addToSidebar(m.text);
+});
+if(h.length===0) addMessage("Hi 👋 I am your chatbot","bot");
+};
+
+function addMessage(msg,sender,save=true){
+let mode=document.getElementById("replyMode").value;
+let chat=document.getElementById("chat");
+let div=document.createElement("div");
+div.className=sender;
+div.innerText=msg;
+
+if(mode==="text"||mode==="both"||sender==="user"){
+chat.appendChild(div);
+chat.scrollTop=chat.scrollHeight;
+}
+
+if(save){
+let h=JSON.parse(localStorage.getItem("chat"))||[];
+h.push({text:msg,sender});
+localStorage.setItem("chat",JSON.stringify(h));
+addToSidebar(msg);
+}
+
+if(sender==="bot"&&(mode==="voice"||mode==="both")){
+let s=new SpeechSynthesisUtterance(msg);
+speechSynthesis.speak(s);
+}
+}
+
+function addToSidebar(t){
+let list=document.getElementById("historyList");
+let d=document.createElement("div");
+d.className="history-item";
+d.innerText=t.substring(0,30);
+list.appendChild(d);
+}
+
+function clearHistory(){
+localStorage.clear();
+location.reload();
+}
+
+function addHTML(html){
+let chat=document.getElementById("chat");
+let d=document.createElement("div");
+d.innerHTML=html;
+chat.appendChild(d);
+}
+
+function showTyping(){
+let d=document.createElement("div");
+d.className="bot typing";
+d.id="typing";
+d.innerText="Typing...";
+chat.appendChild(d);
+}
+
+function removeTyping(){
+let t=document.getElementById("typing");
+if(t) t.remove();
+}
+
+async function sendMessage(){
+let input=document.getElementById("userInput").value;
+if(!input) return;
+
+addMessage(input,"user");
+document.getElementById("userInput").value="";
+showTyping();
+
+let res=await fetch("/chat",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({message:input})
+});
+
+let data=await res.json();
+removeTyping();
+
+// ===== SONGS =====
+
+// TAYLOR (10 songs)
+if(input.toLowerCase().includes("taylor")){
+addHTML(`
+<div class="song-card"><b>Taylor Swift 🎤</b>
+
+<p>Love Story</p><iframe src="https://www.youtube.com/embed/8xg3vE8Ie_E"></iframe>
+<p>Blank Space</p><iframe src="https://www.youtube.com/embed/e-ORhEE9VVg"></iframe>
+<p>Shake It Off</p><iframe src="https://www.youtube.com/embed/nfWlot6h_JM"></iframe>
+<p>You Belong With Me</p><iframe src="https://www.youtube.com/embed/VuNIsY6JdUw"></iframe>
+<p>Anti Hero</p><iframe src="https://www.youtube.com/embed/b1kbLwvqugk"></iframe>
+<p>Lover</p><iframe src="https://www.youtube.com/embed/-BjZmE2gtdo"></iframe>
+<p>Style</p><iframe src="https://www.youtube.com/embed/-CmadmM5cOk"></iframe>
+<p>Wildest Dreams</p><iframe src="https://www.youtube.com/embed/IdneKLhsWOQ"></iframe>
+<p>Cardigan</p><iframe src="https://www.youtube.com/embed/K-a8s8OLBSE"></iframe>
+<p>Willow</p><iframe src="https://www.youtube.com/embed/RsEZmictANA"></iframe>
+
+</div>`);
+}
+
+// SELENA (10 songs)
+if(input.toLowerCase().includes("selena")){
+addHTML(`
+<div class="song-card"><b>Selena Gomez 🎤</b>
+
+<p>Calm Down</p><iframe src="https://www.youtube.com/embed/WcIcVapfqXw"></iframe>
+<p>Come & Get It</p><iframe src="https://www.youtube.com/embed/sa7Oz_25DNk"></iframe>
+<p>Same Old Love</p><iframe src="https://www.youtube.com/embed/9VO8Prq6cZk"></iframe>
+<p>Hands To Myself</p><iframe src="https://www.youtube.com/embed/FMlcn-_jpWY"></iframe>
+<p>Lose You To Love Me</p><iframe src="https://www.youtube.com/embed/zlJDTxahav0"></iframe>
+<p>Back To You</p><iframe src="https://www.youtube.com/embed/VY1eFxgRR-k"></iframe>
+<p>Wolves</p><iframe src="https://www.youtube.com/embed/cH4E_t3m3xM"></iframe>
+<p>It Ain’t Me</p><iframe src="https://www.youtube.com/embed/D5drYkLiLI8"></iframe>
+<p>Rare</p><iframe src="https://www.youtube.com/embed/tVjsGkrKAGI"></iframe>
+<p>Good For You</p><iframe src="https://www.youtube.com/embed/1TsVjvEkc4s"></iframe>
+
+</div>`);
+}
+
+addMessage(data.reply,"bot");
+}
+
+document.getElementById("userInput").addEventListener("keypress",e=>{
+if(e.key==="Enter") sendMessage();
+});
+
+function startVoice(){
+let r=new(window.SpeechRecognition||window.webkitSpeechRecognition)();
+r.onresult=e=>{
+document.getElementById("userInput").value=e.results[0][0].transcript;
+sendMessage();
+};
+r.start();
+}
+
+</script>
+
+</body>
+</html>
