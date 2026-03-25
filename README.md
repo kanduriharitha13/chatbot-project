@@ -79,9 +79,7 @@ Try typing:
 ## 🌟 Future Improvements
 
 - 🤖 Connect real AI (ChatGPT API)
-- 🌙 Dark mode
 - 📱 Mobile responsive design
-- 🔐 Login system
 
 ---
 
