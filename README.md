@@ -124,9 +124,7 @@ http://localhost:3000
 ## 📌 Future Improvements
 
 * 🔗 Connect to real AI API (like OpenAI)
-* 🎵 Add playlist feature
 * 📱 Make fully responsive (mobile friendly)
-* 🌐 Deploy online
 
 ---
 
