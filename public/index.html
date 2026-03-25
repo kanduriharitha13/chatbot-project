@@ -17,8 +17,9 @@
 
 <div class="container">
 
-<div class="header">🤖 Smart AI Chatbot</div>
-
+<div class="header">
+    🤖  AI Chatbot</div>
+    <button id="themeToggle">🌙 Dark Mode</button>
 <div class="options">
 Reply:
 <select id="replyMode">
@@ -153,14 +154,20 @@ addHTML(`
 
 <p>Calm Down</p><iframe src="https://www.youtube.com/embed/WcIcVapfqXw"></iframe>
 <p>Come & Get It</p><iframe src="https://www.youtube.com/embed/sa7Oz_25DNk"></iframe>
-<p>Same Old Love</p><iframe src="https://www.youtube.com/embed/9VO8Prq6cZk"></iframe>
 <p>Hands To Myself</p><iframe src="https://www.youtube.com/embed/FMlcn-_jpWY"></iframe>
 <p>Lose You To Love Me</p><iframe src="https://www.youtube.com/embed/zlJDTxahav0"></iframe>
 <p>Back To You</p><iframe src="https://www.youtube.com/embed/VY1eFxgRR-k"></iframe>
 <p>Wolves</p><iframe src="https://www.youtube.com/embed/cH4E_t3m3xM"></iframe>
 <p>It Ain’t Me</p><iframe src="https://www.youtube.com/embed/D5drYkLiLI8"></iframe>
-<p>Rare</p><iframe src="https://www.youtube.com/embed/tVjsGkrKAGI"></iframe>
 <p>Good For You</p><iframe src="https://www.youtube.com/embed/1TsVjvEkc4s"></iframe>
+<p>Bad Liar</p>
+<iframe width="100%" height="150" 
+src="https://www.youtube.com/embed/NZKXkD6EgBk"></iframe>
+
+<p>Kill Em With Kindness</p>
+<iframe width="100%" height="150" 
+src="https://www.youtube.com/embed/HHP5MKgK0o8" 
+allowfullscreen></iframe>
 
 </div>`);
 }
@@ -180,6 +187,26 @@ sendMessage();
 };
 r.start();
 }
+const toggleBtn = document.getElementById("themeToggle");
+
+// LOAD SAVED MODE
+if(localStorage.getItem("theme") === "dark"){
+    document.documentElement.classList.add("dark");
+    toggleBtn.innerText = "☀️";
+}
+
+// TOGGLE
+toggleBtn.onclick = () => {
+    document.documentElement.classList.toggle("dark");
+
+    if(document.documentElement.classList.contains("dark")){
+        localStorage.setItem("theme","dark");
+        toggleBtn.innerText = "☀️";
+    } else {
+        localStorage.setItem("theme","light");
+        toggleBtn.innerText = "🌙";
+    }
+};
 
 </script>
 
